@@ -14,7 +14,7 @@
         <table>
             <thead>
                 <th>Id</th>
-                <th>Genero</th>
+                <th>Género</th>
             </thead>
             <tbody>
                 <?php foreach ($res as $fila) { ?>
