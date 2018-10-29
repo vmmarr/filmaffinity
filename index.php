@@ -6,6 +6,8 @@
     </head>
     <body>
         <?php
+
+        // De este modo no se puede hacer porque produce un error de inyeccion
         $buscarTitulo = isset($_GET['buscarTitulo']) ? trim($_GET['buscarTitulo']) : '';
         $pdo = new PDO('pgsql:host=localhost; dbname=fa', 'fa', 'fa');
         // $st = $pdo->query('SELECT * FROM peliculas;');
