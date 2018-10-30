@@ -13,6 +13,12 @@
         }
 
         $pdo = conectar();
+        $st = $pdo->prepare('SELECT id FROM peliculas WHERE id = :id');
+        $st->execute([':id' => $id]);
+
+        if (!$st->fetch()) {
+            header('Location: index.php');
+        }
         ?>
         <h3>¿Seguro que deseas borrar la fila?</h3>
 
