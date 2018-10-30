@@ -6,10 +6,17 @@
     </head>
     <body>
         <?php
+        $pdo = new PDO('pgsql:host=localhost; dbname=fa', 'fa', 'fa');
+
+        if (isset($_POST['id'])) {
+            $id = $_POST['id'];
+            $st = $pdo->prepare('DELETE FROM peliculas WHERE id = :id');
+            $st->execute([':id' => $id]); ?>
+            <h3>Pelicula borrada correctamente.</h3>
+        <?php }
 
         // De este modo no se puede hacer porque produce un error de inyeccion
         $buscarTitulo = isset($_GET['buscarTitulo']) ? trim($_GET['buscarTitulo']) : '';
-        $pdo = new PDO('pgsql:host=localhost; dbname=fa', 'fa', 'fa');
         // $st = $pdo->query('SELECT * FROM peliculas;');
         // :titulo es un marcador
         $st = $pdo->prepare("SELECT p.*, genero FROM peliculas p
@@ -39,6 +46,7 @@
                     <th>Sinopsis</th>
                     <th>Duracion</th>
                     <th>Género</th>
+                    <th>Acciones</th>
                 </thead>
                 <tbody>
                     <?php foreach ($st as $fila) { ?>
@@ -48,6 +56,7 @@
                             <td><?= $fila['sinopsis'] ?></td>
                             <td><?= $fila['duracion'] ?></td>
                             <td><?= $fila['genero'] ?></td>
+                            <td><a href="confirm_borrado.php?id=<?= $fila['id'] ?>">Borrar</a></td>
                         </tr>
                     <?php } ?>
                 </tbody>
