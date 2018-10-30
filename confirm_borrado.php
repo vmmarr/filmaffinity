@@ -6,6 +6,8 @@
     </head>
     <body>
         <?php
+        require 'auxiliar.php';
+
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
         } else {
@@ -13,10 +15,8 @@
         }
 
         $pdo = conectar();
-        $st = $pdo->prepare('SELECT id FROM peliculas WHERE id = :id');
-        $st->execute([':id' => $id]);
 
-        if (!$st->fetch()) {
+        if (!buscarPelicula($id, $pdo)) {
             header('Location: index.php');
         }
         ?>

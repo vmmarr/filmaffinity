@@ -11,10 +11,16 @@
 
         if (isset($_POST['id'])) {
             $id = $_POST['id'];
-            $st = $pdo->prepare('DELETE FROM peliculas WHERE id = :id');
-            $st->execute([':id' => $id]); ?>
-            <h3>Pelicula borrada correctamente.</h3>
-        <?php }
+            if (!buscarPelicula($id, $pdo)) { ?>
+                <h3>La pelicula no existe.</h3>
+            <?php
+            } else {
+                $st = $pdo->prepare('DELETE FROM peliculas WHERE id = :id');
+                $st->execute([':id' => $id]); ?>
+                <h3>Pelicula borrada correctamente.</h3>
+            <?php
+            }
+         }
 
         // De este modo no se puede hacer porque produce un error de inyeccion
         $buscarTitulo = isset($_GET['buscarTitulo']) ? trim($_GET['buscarTitulo']) : '';
