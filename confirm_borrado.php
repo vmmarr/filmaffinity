@@ -11,6 +11,8 @@
         } else {
             header('Location: index.php');
         }
+
+        $pdo = conectar();
         ?>
         <h3>¿Seguro que deseas borrar la fila?</h3>
 

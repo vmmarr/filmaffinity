@@ -6,7 +6,8 @@
     </head>
     <body>
         <?php
-        $pdo = new PDO('pgsql:host=localhost; dbname=fa', 'fa', 'fa');
+        require 'auxiliar.php';
+        $pdo = conectar();
 
         if (isset($_POST['id'])) {
             $id = $_POST['id'];
