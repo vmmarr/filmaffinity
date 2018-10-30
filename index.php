@@ -11,6 +11,8 @@
 
         if (isset($_POST['id'])) {
             $id = $_POST['id'];
+            $pdo->beginTransaction();
+            $pdo->exec('LOOK TABLE peliculas IN SHARE MODE');
             if (!buscarPelicula($id, $pdo)) { ?>
                 <h3>La pelicula no existe.</h3>
             <?php
@@ -20,6 +22,7 @@
                 <h3>Pelicula borrada correctamente.</h3>
             <?php
             }
+            $pdo->commit();
          }
 
         // De este modo no se puede hacer porque produce un error de inyeccion
