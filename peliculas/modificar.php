@@ -25,6 +25,7 @@
             $flt['genero_id'] = comprobarGeneroId($pdo, $error);
             comprobarErrores($error);
             modificarPelicula($pdo, $flt, $id);
+            $_SESSION['mensaje'] = 'Pelicula modificada correctamente.';
             header('Location: index.php');
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada

@@ -13,6 +13,18 @@
     </head>
     <body>
         <div class="container">
+            <?php
+            if (isset($_SESSION['mensaje'])) { ?>
+                <div class="row">
+                    <div class="alert alert-success" role="alert">
+                        <div class="text-center">
+                            <?= $_SESSION['mensaje'] ?>
+                        </div>
+                    </div>
+                </div>
+            <?php
+            unset($_SESSION['mensaje']);
+            } ?>
             <div class="row">
                 <?php
                 require '../comunes/auxiliar.php';
