@@ -56,7 +56,11 @@ function comprobarAnyo(&$error)
     return $fltAnyo;
 }
 
+<<<<<<< HEAD
 function mostrarFormulario($valores, $error, $pdo, $accion) {
+=======
+function mostrarFormulario($valores, $error, $accion) {
+>>>>>>> 5d7d5100b30e7883784ae69e5d8344585131196f
     extract($valores);
     ?>
     <div class="panel panel-primary">

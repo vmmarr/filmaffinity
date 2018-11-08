@@ -32,7 +32,11 @@
         }
         ?>
         <div class="container">
+<<<<<<< HEAD
             <?php mostrarFormulario($fila, $error, $pdo, 'Modificar'); ?>
+=======
+            <?php mostrarFormulario($fila, $error, 'Modificar'); ?>
+>>>>>>> 5d7d5100b30e7883784ae69e5d8344585131196f
         </div>
     </body>
 </html>

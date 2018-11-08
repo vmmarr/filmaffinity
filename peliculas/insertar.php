@@ -34,7 +34,11 @@
         ?>
         <br>
         <div class="container">
+<<<<<<< HEAD
             <?php mostrarFormulario($valores, $error, $pdo, 'Insertar'); ?>
+=======
+            <?php mostrarFormulario($valores, $error, 'Insertar'); ?>
+>>>>>>> 5d7d5100b30e7883784ae69e5d8344585131196f
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
