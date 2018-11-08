@@ -15,9 +15,7 @@
             <div class="row">
                 <?php
                 require '../comunes/auxiliar.php';
-
                 $pdo = conectar();
-
                 if (isset($_POST['id'])) {
                     $id = $_POST['id'];
                     $pdo->beginTransaction();
@@ -33,7 +31,6 @@
                     }
                     $pdo->commit();
                 }
-
                 $buscarTitulo = isset($_GET['buscarTitulo'])
                 ? trim($_GET['buscarTitulo'])
                 : '';
@@ -41,7 +38,8 @@
                                        FROM peliculas p
                                        JOIN generos g
                                          ON genero_id = g.id
-                                      WHERE position(lower(:titulo) in lower(titulo)) != 0');
+                                      WHERE position(lower(:titulo) in lower(titulo)) != 0
+                                   ORDER BY id');
                 $st->execute([':titulo' => $buscarTitulo]);
                 ?>
             </div>

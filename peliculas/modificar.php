@@ -2,14 +2,14 @@
 <html lang="es" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Modificar una pelicula</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Modificar una nueva película</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     </head>
     <body>
         <?php
         require '../comunes/auxiliar.php';
-
-
         try {
             $error = [];
             $id = comprobarId();
@@ -32,11 +32,9 @@
         }
         ?>
         <div class="container">
-<<<<<<< HEAD
-            <?php mostrarFormulario($fila, $error, $pdo, 'Modificar'); ?>
-=======
-            <?php mostrarFormulario($fila, $error, 'Modificar'); ?>
->>>>>>> 5d7d5100b30e7883784ae69e5d8344585131196f
+            <?php mostrarFormulario($fila, $error, $pdo, 'Modificar') ?>
         </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </body>
 </html>

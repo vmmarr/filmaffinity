@@ -10,7 +10,6 @@
     <body>
         <?php
         require '../comunes/auxiliar.php';
-
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
         } else {

@@ -6,31 +6,25 @@ const PAR = [
     'duracion' => '',
     'genero_id' => '',
 ];
-
 class ValidationException extends Exception
 {
 }
-
 class ParamException extends Exception
 {
 }
-
 class EmptyParamException extends Exception
 {
 }
-
 function conectar()
 {
     return new PDO('pgsql:host=localhost;dbname=fa', 'fa', 'fa');
 }
-
 function buscarPelicula($pdo, $id)
 {
     $st = $pdo->prepare('SELECT * FROM peliculas WHERE id = :id');
     $st->execute([':id' => $id]);
     return $st->fetch();
 }
-
 function comprobarTitulo(&$error)
 {
     $fltTitulo = trim(filter_input(INPUT_POST, 'titulo'));
@@ -41,7 +35,6 @@ function comprobarTitulo(&$error)
     }
     return $fltTitulo;
 }
-
 function comprobarAnyo(&$error)
 {
     $fltAnyo = filter_input(INPUT_POST, 'anyo', FILTER_VALIDATE_INT, [
@@ -55,14 +48,90 @@ function comprobarAnyo(&$error)
     }
     return $fltAnyo;
 }
-
-<<<<<<< HEAD
-function mostrarFormulario($valores, $error, $pdo, $accion) {
-=======
-function mostrarFormulario($valores, $error, $accion) {
->>>>>>> 5d7d5100b30e7883784ae69e5d8344585131196f
+function comprobarDuracion(&$error)
+{
+    $fltDuracion = trim(filter_input(INPUT_POST, 'duracion'));
+    if ($fltDuracion !== '') {
+        $fltDuracion = filter_input(INPUT_POST, 'duracion', FILTER_VALIDATE_INT, [
+            'options' => [
+                'min_range' => 0,
+                'max_range' => 32767,
+            ],
+        ]);
+        if ($fltDuracion === false) {
+            $error['duracion'] = 'La duración no es correcta.';
+        }
+    } else {
+        $fltDuracion = null;
+    }
+    return $fltDuracion;
+}
+function comprobarGeneroId($pdo, &$error)
+{
+    $fltGeneroId = filter_input(INPUT_POST, 'genero_id', FILTER_VALIDATE_INT);
+    if ($fltGeneroId !== false) {
+        // Buscar en la base de datos si existe ese género
+        $st = $pdo->prepare('SELECT * FROM generos WHERE id = :id');
+        $st->execute([':id' => $fltGeneroId]);
+        if (!$st->fetch()) {
+            $error['genero_id'] = 'No existe ese género.';
+        }
+    } else {
+        $error['genero_id'] = 'El género no es correcto.';
+    }
+    return $fltGeneroId;
+}
+function insertarPelicula($pdo, $fila)
+{
+    $st = $pdo->prepare('INSERT INTO peliculas (titulo, anyo, sinopsis, duracion, genero_id)
+                         VALUES (:titulo, :anyo, :sinopsis, :duracion, :genero_id)');
+    $st->execute($fila);
+}
+function modificarPelicula($pdo, $fila, $id)
+{
+    $st = $pdo->prepare('UPDATE peliculas
+                            SET titulo = :titulo
+                              , anyo = :anyo
+                              , sinopsis = :sinopsis
+                              , duracion = :duracion
+                              , genero_id = :genero_id
+                          WHERE id = :id');
+    $st->execute($fila + ['id' => $id]);
+}
+function comprobarParametros($par)
+{
+    if (empty($_POST)) {
+        throw new EmptyParamException();
+    }
+    if (!empty(array_diff_key($par, $_POST)) ||
+        !empty(array_diff_key($_POST, $par))) {
+        throw new ParamException();
+    }
+}
+function comprobarErrores($error)
+{
+    if (!empty($error)) {
+        throw new ValidationException();
+    }
+}
+function hasError($key, $error)
+{
+    return array_key_exists($key, $error) ? 'has-error' : '';
+}
+function mensajeError($key, $error)
+{
+    if (isset($error[$key])) { ?>
+        <small class="help-block"><?= $error[$key] ?></small>
+    <?php
+    }
+}
+function mostrarFormulario($valores, $error, $pdo, $accion)
+{
     extract($valores);
+    $st = $pdo->query('SELECT * FROM generos');
+    $generos = $st->fetchAll();
     ?>
+    <br>
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title"><?= $accion ?> una nueva película...</h3>
@@ -98,9 +167,13 @@ function mostrarFormulario($valores, $error, $accion) {
                 </div>
                 <div class="form-group <?= hasError('genero_id', $error) ?>">
                     <label for="genero_id" class="control-label">Género</label>
-                    <input id="genero_id" type="text" name="genero_id"
-                           class="form-control"
-                           value="<?= h($genero_id)?>">
+                    <select class="form-control" name="genero_id">
+                        <?php foreach ($generos as $g): ?>
+                            <option value="<?= $g['id'] ?>" <?= selected($g['id'], $genero_id) ?> >
+                                <?= $g['genero'] ?>
+                            </option>
+                        <?php endforeach ?>
+                    </select>
                     <?php mensajeError('genero_id', $error) ?>
                 </div>
                 <input type="submit" value="<?= $accion ?>"
@@ -109,112 +182,29 @@ function mostrarFormulario($valores, $error, $accion) {
             </form>
         </div>
     </div>
-<?php }
-
-function comprobarDuracion(&$error)
-{
-    $fltDuracion = trim(filter_input(INPUT_POST, 'duracion'));
-    if ($fltDuracion !== '') {
-        $fltDuracion = filter_input(INPUT_POST, 'duracion', FILTER_VALIDATE_INT, [
-            'options' => [
-                'min_range' => 0,
-                'max_range' => 32767,
-            ],
-        ]);
-        if ($fltDuracion === false) {
-            $error['duracion'] = 'La duración no es correcta.';
-        }
-    } else {
-        $fltDuracion = null;
-    }
-    return $fltDuracion;
+    <?php
 }
-
 function h($cadena)
 {
     return htmlspecialchars($cadena, ENT_QUOTES);
 }
-
-function modificarPelicula($pdo, $fila, $id)
+function comprobarId()
 {
-    $st = $pdo->prepare('UPDATE peliculas
-                            SET titulo = :titulo
-                              , anyo = :anyo
-                              , sinopsis = :sinopsis
-                              , duracion = :duracion
-                              , genero_id = :genero_id
-                          WHERE id = :id');
-    $st->execute($fila + ['id' => $id]);
-}
-
-function comprobarGeneroId($pdo, &$error)
-{
-    $fltGeneroId = filter_input(INPUT_POST, 'genero_id', FILTER_VALIDATE_INT);
-    if ($fltGeneroId !== false) {
-        // Buscar en la base de datos si existe ese género
-        $st = $pdo->prepare('SELECT * FROM generos WHERE id = :id');
-        $st->execute([':id' => $fltGeneroId]);
-        if (!$st->fetch()) {
-            $error['genero_id'] = 'No existe ese género.';
-        }
-    } else {
-        $error['genero_id'] = 'El género no es correcto.';
-    }
-    return $fltGeneroId;
-}
-
-function insertarPelicula($pdo, $fila)
-{
-    $st = $pdo->prepare('INSERT INTO peliculas (titulo, anyo, sinopsis, duracion, genero_id)
-                         VALUES (:titulo, :anyo, :sinopsis, :duracion, :genero_id)');
-    $st->execute($fila);
-}
-
-function comprobarParametros($par)
-{
-    if (empty($_POST)) {
-        throw new EmptyParamException();
-    }
-    if (!empty(array_diff_key($par, $_POST)) ||
-        !empty(array_diff_key($_POST, $par))) {
-        throw new ParamException();
-    }
-}
-
-function comprobarErrores($error)
-{
-    if (!empty($error)) {
-        throw new ValidationException();
-    }
-}
-
-function hasError($key, $error)
-{
-    return array_key_exists($key, $error) ? 'has-error' : '';
-}
-
-function mensajeError($key, $error)
-{
-    if (isset($error[$key])) { ?>
-        <small class="help-block"><?= $error[$key] ?></small>
-    <?php
-    }
-}
-
-function comprobarId() {
     $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
     if ($id === null || $id === false) {
         throw new ParamException();
-
     }
     return $id;
 }
-
-function comprobarPelicula($pdo, $id) {
+function comprobarPelicula($pdo, $id)
+{
     $fila = buscarPelicula($pdo, $id);
-
     if ($fila === false) {
         throw new ParamException();
     }
     return $fila;
+}
+function selected($a, $b)
+{
+    return $a == $b ? 'selected' : '';
 }
