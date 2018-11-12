@@ -11,7 +11,12 @@
     <body>
         <?php
         require '../comunes/auxiliar.php';
-        menu();
+
+        if (!isset($_SESION['usuario'])) {
+            header('Location: index.php');
+        }
+
+        menu($_SESSION);
         try {
             $error = [];
             $id = comprobarId();

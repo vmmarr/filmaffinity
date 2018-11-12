@@ -14,7 +14,7 @@
     <body>
         <?php
         require '../comunes/auxiliar.php';
-        menu();
+        menu($_SESSION);
         ?>
         <div class="container">
             <br>

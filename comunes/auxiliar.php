@@ -209,14 +209,19 @@ function selected($a, $b)
     return $a == $b ? 'selected' : '';
 }
 
-function menu() { ?>
+function menu($_SESSION) { ?>
     <nav class="navbar navbar-default navbar-inverse">
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="../index.php">FilmAffinity</a>
             </div>
             <div class="navbar-text navbar-right">
-                <a href="login.php" class="btn btn-success">Login</a>
+                <?php if (isset($_SESSION['usuario'])) { ?>
+                    <?= $_SESSION['usurio'] ?>
+                    <a href="logout.php" class="btn btn-success">Logout</a>
+                <?php } else { ?>
+                    <a href="login.php" class="btn btn-success">Login</a>
+                <?php } ?>
             </div>
         </div>
     </nav>
@@ -230,4 +235,39 @@ function menu() { ?>
             </div>
         </div>
     </nav>
-<?php } ?>
+<?php }
+function comprobarLogin(&$error)
+{
+    $login = trim(filter_input(INPUT_POST, 'login'));
+    if ($login === '') {
+        $error['login'] = 'El nombre de usuario no puede estar vacío.';
+    }
+    return $login;
+}
+function comprobarPassword(&$error)
+{
+    $password = trim(filter_input(INPUT_POST, 'password'));
+    if ($password === '') {
+        $error['password'] = 'La contraseña no puede estar vacía.';
+    }
+    return $password;
+}
+
+// Comprueba si existe el usuario indicado
+function comprobarUsuario($valores, $pdo, &$error)
+{
+    extract($valores);
+    $st = $pdo->prepare('SELECT *
+                           FROM usuarios
+                          WHERE login = :login');
+    $st->execute(['login' => $login]);
+    $fila = $st->fetch();
+    if ($fila !== false) {
+        if (password_verify($password, $fila['password'])) {
+            return $fila;
+        }
+    }
+    $error['sesion'] = 'El usuario o la contraseña son incorrectos.';
+    return false;
+}
+?>

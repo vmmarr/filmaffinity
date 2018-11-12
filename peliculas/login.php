@@ -5,28 +5,27 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Iniciar sesion</title>
+        <title>Iniciar sesión</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     </head>
     <body>
         <?php
         require '../comunes/auxiliar.php';
-        menu();
         const PAR_LOGIN = ['login' => '', 'password' => ''];
+
         $valores = PAR_LOGIN;
 
         try {
             $error = [];
             $pdo = conectar();
-            comprobarParametros(PAR);
+            comprobarParametros(PAR_LOGIN);
             $valores = array_map('trim', $_POST);
-            $flt['titulo'] = comprobarTitulo($error);
-            $flt['anyo'] = comprobarAnyo($error);
-            $flt['sinopsis'] = trim(filter_input(INPUT_POST, 'sinopsis'));
-            $flt['duracion'] = comprobarDuracion($error);
-            $flt['genero_id'] = comprobarGeneroId($pdo, $error);
+            $flt['login'] = comprobarLogin($error);
+            $flt['password'] = comprobarPassword($error);
+            $usuario = comprobarUsuario($flt, $pdo, $error);
             comprobarErrores($error);
-            insertarPelicula($pdo, $flt);
+            // Sólo queda loguearse
+            $_SESION['usuario'] = $usuario['login'];
             header('Location: index.php');
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada
@@ -39,13 +38,13 @@
                 <form action="" method="post">
                     <div class="form-group">
                         <label for="login">Usuario:</label>
-                        <input type="text" name="login" value="">
+                        <input class="form-control" type="text" name="login" value="">
                     </div>
                     <div class="form-group">
                         <label for="password">Contraseña:</label>
-                        <input type="text" name="password" value="">
+                        <input class="form-control" type="password" name="password" value="">
                     </div>
-                    <button type="submit" class="btn btn-default">Iniciar section</button>
+                    <button type="submit" class="btn btn-default">Iniciar sesión</button>
                 </form>
             </div>
         </div>
