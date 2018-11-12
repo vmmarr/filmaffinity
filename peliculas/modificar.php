@@ -11,6 +11,7 @@
     <body>
         <?php
         require '../comunes/auxiliar.php';
+        menu();
         try {
             $error = [];
             $id = comprobarId();

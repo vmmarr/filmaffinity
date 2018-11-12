@@ -11,10 +11,10 @@
     <body>
         <?php
         require '../comunes/auxiliar.php';
-
+        menu();
         const PAR_LOGIN = ['login' => '', 'password' => ''];
         $valores = PAR_LOGIN;
-        
+
         try {
             $error = [];
             $pdo = conectar();

@@ -208,3 +208,26 @@ function selected($a, $b)
 {
     return $a == $b ? 'selected' : '';
 }
+
+function menu() { ?>
+    <nav class="navbar navbar-default navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="../index.php">FilmAffinity</a>
+            </div>
+            <div class="navbar-text navbar-right">
+                <a href="login.php" class="btn btn-success">Login</a>
+            </div>
+        </div>
+    </nav>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="../peliculas/index.php" class="btn btn-primary">Peliculas</a>
+            </div>
+            <div class="navbar-header">
+                <a href="../generos/index.php" class="btn btn-primary">Generos</a>
+            </div>
+        </div>
+    </nav>
+<?php } ?>
