@@ -6,25 +6,38 @@ const PAR = [
     'duracion' => '',
     'genero_id' => '',
 ];
+
 class ValidationException extends Exception
 {
 }
+
 class ParamException extends Exception
 {
 }
+
 class EmptyParamException extends Exception
 {
 }
+
 function conectar()
 {
     return new PDO('pgsql:host=localhost;dbname=fa', 'fa', 'fa');
 }
+
 function buscarPelicula($pdo, $id)
 {
     $st = $pdo->prepare('SELECT * FROM peliculas WHERE id = :id');
     $st->execute([':id' => $id]);
     return $st->fetch();
 }
+
+function buscarUsuario($pdo, $id)
+{
+    $st = $pdo->prepare('SELECT * FROM usuarios WHERE id = :id');
+    $st->execute([':id' => $id]);
+    return $st->fetch();
+}
+
 function comprobarTitulo(&$error)
 {
     $fltTitulo = trim(filter_input(INPUT_POST, 'titulo'));
@@ -35,6 +48,7 @@ function comprobarTitulo(&$error)
     }
     return $fltTitulo;
 }
+
 function comprobarAnyo(&$error)
 {
     $fltAnyo = filter_input(INPUT_POST, 'anyo', FILTER_VALIDATE_INT, [
@@ -48,6 +62,7 @@ function comprobarAnyo(&$error)
     }
     return $fltAnyo;
 }
+
 function comprobarDuracion(&$error)
 {
     $fltDuracion = trim(filter_input(INPUT_POST, 'duracion'));
@@ -66,6 +81,7 @@ function comprobarDuracion(&$error)
     }
     return $fltDuracion;
 }
+
 function comprobarGeneroId($pdo, &$error)
 {
     $fltGeneroId = filter_input(INPUT_POST, 'genero_id', FILTER_VALIDATE_INT);
@@ -81,12 +97,14 @@ function comprobarGeneroId($pdo, &$error)
     }
     return $fltGeneroId;
 }
+
 function insertarPelicula($pdo, $fila)
 {
     $st = $pdo->prepare('INSERT INTO peliculas (titulo, anyo, sinopsis, duracion, genero_id)
                          VALUES (:titulo, :anyo, :sinopsis, :duracion, :genero_id)');
     $st->execute($fila);
 }
+
 function modificarPelicula($pdo, $fila, $id)
 {
     $st = $pdo->prepare('UPDATE peliculas
@@ -98,6 +116,7 @@ function modificarPelicula($pdo, $fila, $id)
                           WHERE id = :id');
     $st->execute($fila + ['id' => $id]);
 }
+
 function comprobarParametros($par)
 {
     if (empty($_POST)) {
@@ -108,16 +127,19 @@ function comprobarParametros($par)
         throw new ParamException();
     }
 }
+
 function comprobarErrores($error)
 {
     if (!empty($error)) {
         throw new ValidationException();
     }
 }
+
 function hasError($key, $error)
 {
     return array_key_exists($key, $error) ? 'has-error' : '';
 }
+
 function mensajeError($key, $error)
 {
     if (isset($error[$key])) { ?>
@@ -125,6 +147,7 @@ function mensajeError($key, $error)
     <?php
     }
 }
+
 function mostrarFormulario($valores, $error, $pdo, $accion)
 {
     extract($valores);
@@ -184,10 +207,12 @@ function mostrarFormulario($valores, $error, $pdo, $accion)
     </div>
     <?php
 }
+
 function h($cadena)
 {
     return htmlspecialchars($cadena, ENT_QUOTES);
 }
+
 function comprobarId()
 {
     $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -196,6 +221,7 @@ function comprobarId()
     }
     return $id;
 }
+
 function comprobarPelicula($pdo, $id)
 {
     $fila = buscarPelicula($pdo, $id);
@@ -204,6 +230,7 @@ function comprobarPelicula($pdo, $id)
     }
     return $fila;
 }
+
 function selected($a, $b)
 {
     return $a == $b ? 'selected' : '';
@@ -236,6 +263,7 @@ function menu($_SESSION) { ?>
         </div>
     </nav>
 <?php }
+
 function comprobarLogin(&$error)
 {
     $login = trim(filter_input(INPUT_POST, 'login'));
@@ -244,6 +272,7 @@ function comprobarLogin(&$error)
     }
     return $login;
 }
+
 function comprobarPassword(&$error)
 {
     $password = trim(filter_input(INPUT_POST, 'password'));
