@@ -26,7 +26,7 @@
             comprobarErrores($error);
             // Sólo queda loguearse
             $_SESION['usuario'] = $usuario['login'];
-            header('Location: index.php');
+            header('Location: ../index.php');
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada
         } catch (ParamException $e) {

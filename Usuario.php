@@ -7,6 +7,7 @@ class Usuario
     public $id;
     public $login;
     public $password;
+    public static $cantidad = 0;
 
     public function __construct($id) {
         require 'comunes/auxiliar.php';
@@ -16,10 +17,11 @@ class Usuario
         $this->id = $id;
         $this->login = $usuario['login'];
         $this->password = $usuario['password'];
+        self::$cantidad++;
     }
 
     public function __destruct() {
-        echo 'Se destruye.';
+        self::$cantidad--;
     }
 
     public function desloguear() {
