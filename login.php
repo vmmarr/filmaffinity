@@ -10,7 +10,8 @@
     </head>
     <body>
         <?php
-        require '../comunes/auxiliar.php';
+        require 'comunes/auxiliar.php';
+        menu();
         const PAR_LOGIN = ['login' => '', 'password' => ''];
 
         $valores = PAR_LOGIN;
@@ -25,27 +26,33 @@
             $usuario = comprobarUsuario($flt, $pdo, $error);
             comprobarErrores($error);
             // Sólo queda loguearse
-            $_SESION['usuario'] = $usuario['login'];
-            header('Location: ../index.php');
+            $_SESSION['usuario'] = $usuario['login'];
+            //var_dump($_SESSION['usuario']);
+            header('Location: index.php');
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada
         } catch (ParamException $e) {
             header('Location: index.php');
         }
         ?>
-        <div class="container">
-            <div class="row">
-                <form action="" method="post">
-                    <div class="form-group">
-                        <label for="login">Usuario:</label>
-                        <input class="form-control" type="text" name="login" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Contraseña:</label>
-                        <input class="form-control" type="password" name="password" value="">
-                    </div>
-                    <button type="submit" class="btn btn-default">Iniciar sesión</button>
-                </form>
+        <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <form action="" method="post">
+                        <div class="form-group">
+                            <label for="login">Usuario:</label>
+                            <input class="form-control" type="text" name="login" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Contraseña:</label>
+                            <input class="form-control" type="password" name="password" value="">
+                        </div>
+                        <button type="submit" class="btn btn-default">Iniciar sesión</button>
+                        <a type="submit" href="insertar_usu.php" class="btn btn-default">Crear usuario</a>
+                    </form>
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

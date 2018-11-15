@@ -243,17 +243,17 @@ function menu() { ?>
                 <a class="navbar-brand" href="../index.php">FilmAffinity</a>
             </div>
             <div class="navbar-header">
-                <a href="../peliculas/index.php" class="btn btn-primary">Peliculas</a>
+                <a href="../peliculas/index.php" class="btn btn-primary" style='margin:10px'>Peliculas</a>
             </div>
             <div class="navbar-header">
-                <a href="../generos/index.php" class="btn btn-primary">Generos</a>
+                <a href="../generos/index.php" class="btn btn-primary" style='margin:10px'>Generos</a>
             </div>
             <div class="navbar-text navbar-right">
                 <?php if (isset($_SESSION['usuario'])) { ?>
-                    <?= $_SESSION['usurio'] ?>
-                    <a href="logout.php" class="btn btn-success">Logout</a>
+                    <?= $_SESSION['usuario'] ?>
+                    <a href="../logout.php" class="btn btn-success">Logout</a>
                 <?php } else { ?>
-                    <a href="login.php" class="btn btn-success">Login</a>
+                    <a href="../login.php" class="btn btn-success">Login</a>
                 <?php } ?>
             </div>
         </div>
