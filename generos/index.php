@@ -62,7 +62,7 @@
                         <legend>Buscar...</legend>
                         <form action="" method="get" class="form-inline">
                             <div class="form-group">
-                                <label for="buscarTitulo">Buscar por título:</label>
+                                <label for="buscarTitulo">Buscar genero:</label>
                                 <input id="buscarTitulo" type="text" name="buscarTitulo"
                                        value="<?= $buscarTitulo ?>"
                                        class="form-control">
@@ -74,23 +74,14 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-3">
                     <table class="table table-bordered table-hover table-striped">
                         <thead>
-                            <th>Título</th>
-                            <th>Año</th>
-                            <th>Sinopsis</th>
-                            <th>Duración</th>
                             <th>Género</th>
-                            <th>Acciones</th>
                         </thead>
                         <tbody>
                             <?php foreach ($st as $fila): ?>
                                 <tr>
-                                    <td><?= h($fila['titulo']) ?></td>
-                                    <td><?= h($fila['anyo']) ?></td>
-                                    <td><?= h($fila['sinopsis']) ?></td>
-                                    <td><?= h($fila['duracion']) ?></td>
                                     <td><?= h($fila['genero']) ?></td>
                                     <td>
                                         <a href="confirm_borrado.php?id=<?= $fila['id'] ?>"
