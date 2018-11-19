@@ -12,7 +12,7 @@
         <?php
         require '../comunes/auxiliar.php';
 
-        if (!isset($_SESION['usuario'])) {
+        if (!isset($_SESSION['usuario'])) {
             header('Location: index.php');
         }
 
