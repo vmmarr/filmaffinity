@@ -98,10 +98,33 @@ function comprobarGeneroId($pdo, &$error)
     return $fltGeneroId;
 }
 
+function comprobarGenero($pdo, &$error)
+{
+    $fltGenero = filter_input(INPUT_POST, 'genero', FILTER_VALIDATE_INT);
+    if ($fltGenero !== false) {
+        // Buscar en la base de datos si existe ese género
+        $st = $pdo->prepare('SELECT * FROM generos WHERE genero = :genero');
+        $st->execute([':genero' => $fltGenero]);
+        if (!$st->fetch()) {
+            $error['genero'] = 'No existe ese género.';
+        }
+    } else {
+        $error['genero'] = 'El género no es correcto.';
+    }
+    return $fltGenero;
+}
+
 function insertarPelicula($pdo, $fila)
 {
     $st = $pdo->prepare('INSERT INTO peliculas (titulo, anyo, sinopsis, duracion, genero_id)
                          VALUES (:titulo, :anyo, :sinopsis, :duracion, :genero_id)');
+    $st->execute($fila);
+}
+
+function insertarGenero($pdo, $fila)
+{
+    $st = $pdo->prepare('INSERT INTO generos (genero)
+                         VALUES (:genero)');
     $st->execute($fila);
 }
 
@@ -198,6 +221,34 @@ function mostrarFormulario($valores, $error, $pdo, $accion)
                         <?php endforeach ?>
                     </select>
                     <?php mensajeError('genero_id', $error) ?>
+                </div>
+                <input type="submit" value="<?= $accion ?>"
+                       class="btn btn-success">
+                <a href="index.php" class="btn btn-info">Volver</a>
+            </form>
+        </div>
+    </div>
+    <?php
+}
+
+function mostrarFormularioGenero($valores, $error, $pdo, $accion)
+{
+    extract($valores);
+    $st = $pdo->query('SELECT * FROM generos');
+    $generos = $st->fetchAll();
+    ?>
+    <br>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title"><?= $accion ?> un nuevo genero...</h3>
+        </div>
+        <div class="panel-body">
+            <form action="" method="post">
+                <div class="form-group <?= hasError('genero', $error) ?>">
+                    <label for="genero" class="control-label">Genero</label>
+                    <input id="genero" type="text" name="genero"
+                           class="form-control" value="<?= h($genero) ?>">
+                    <?php mensajeError('genero', $error) ?>
                 </div>
                 <input type="submit" value="<?= $accion ?>"
                        class="btn btn-success">

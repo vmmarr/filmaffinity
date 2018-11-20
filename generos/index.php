@@ -101,7 +101,7 @@
             </div>
             <div class="row">
                 <div class="text-center">
-                    <a href="insertar.php" class="btn btn-info">Insertar una nueva película</a>
+                    <a href="insertar.php" class="btn btn-info">Insertar un nuevo genero</a>
                 </div>
             </div>
             <?php if (!isset($_COOKIE['acepta'])): ?>
