@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Bases de datos</title>
+        <title>Generos</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <style media="screen">
             #busqueda { margin-top: 1em; }
@@ -32,28 +32,26 @@
                 if (isset($_POST['id'])) {
                     $id = $_POST['id'];
                     $pdo->beginTransaction();
-                    $pdo->exec('LOCK TABLE peliculas IN SHARE MODE');
-                    if (!buscarPelicula($pdo, $id)) { ?>
-                        <h3>La película no existe.</h3>
+                    $pdo->exec('LOCK TABLE generos IN SHARE MODE');
+                    if (!buscarGenero($pdo, $id)) { ?>
+                        <h3>El genero no existe.</h3>
                         <?php
                     } else {
-                        $st = $pdo->prepare('DELETE FROM peliculas WHERE id = :id');
+                        $st = $pdo->prepare('DELETE FROM generos WHERE id = :id');
                         $st->execute([':id' => $id]); ?>
-                        <h3>Película borrada correctamente.</h3>
+                        <h3>Genero borrado correctamente.</h3>
                         <?php
                     }
                     $pdo->commit();
                 }
-                $buscarTitulo = isset($_GET['buscarTitulo'])
-                ? trim($_GET['buscarTitulo'])
+                $buscarGenero = isset($_GET['buscarGenero'])
+                ? trim($_GET['buscarGenero'])
                 : '';
-                $st = $pdo->prepare('SELECT p.*, genero
-                                       FROM peliculas p
-                                       JOIN generos g
-                                         ON genero_id = g.id
-                                      WHERE position(lower(:titulo) in lower(titulo)) != 0
+                $st = $pdo->prepare('SELECT genero
+                                       FROM generos
+                                      WHERE position(lower(:genero) in lower(genero)) != 0
                                    ORDER BY id');
-                $st->execute([':titulo' => $buscarTitulo]);
+                $st->execute([':genero' => $buscarGenero]);
                 ?>
             </div>
             <div class="row" id="busqueda">
@@ -62,9 +60,9 @@
                         <legend>Buscar...</legend>
                         <form action="" method="get" class="form-inline">
                             <div class="form-group">
-                                <label for="buscarTitulo">Buscar genero:</label>
-                                <input id="buscarTitulo" type="text" name="buscarTitulo"
-                                       value="<?= $buscarTitulo ?>"
+                                <label for="buscarGenero">Buscar genero:</label>
+                                <input id="buscarGenero" type="text" name="buscarTitulo"
+                                       value="<?= $buscarGenero ?>"
                                        class="form-control">
                             </div>
                             <input type="submit" value="Buscar" class="btn btn-primary">

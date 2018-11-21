@@ -181,6 +181,20 @@ function mostrarFormulario($valores, $error, $pdo, $accion)
 
 // Funciones de Generos
 
+function buscarGenero($pdo, $id)
+{
+    $st = $pdo->prepare('SELECT * FROM generos WHERE id = :id');
+    $st->execute([':id' => $id]);
+    return $st->fetch();
+}
+
+function buscarPeliculasPorGenero($pdo, $genero_id)
+{
+    $st = $pdo->prepare('SELECT * FROM peliculas WHERE genero_id = :genero_id');
+    $st->execute([':genero_id' => $id]);
+    return $st->fetchAll();
+}
+
 function comprobarGenero($pdo, &$error)
 {
     $fltGenero = filter_input(INPUT_POST, 'genero', FILTER_VALIDATE_INT);
