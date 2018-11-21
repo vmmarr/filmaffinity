@@ -18,7 +18,7 @@
             $pdo = conectar();
             comprobarParametros(PAR);
             $valores = array_map('trim', $_POST);
-            $flt['genero'] = comprobarGeneroId($pdo, $error);
+            $flt['genero'] = comprobarGenero($pdo, $error);
             comprobarErrores($error);
             insertarGenero($pdo, $flt);
             header('Location: index.php');

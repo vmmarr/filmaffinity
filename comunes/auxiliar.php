@@ -5,6 +5,7 @@ const PAR = [
     'sinopsis' => '',
     'duracion' => '',
     'genero_id' => '',
+    'genero' => '',
 ];
 
 class ValidationException extends Exception
@@ -234,8 +235,6 @@ function mostrarFormulario($valores, $error, $pdo, $accion)
 function mostrarFormularioGenero($valores, $error, $pdo, $accion)
 {
     extract($valores);
-    $st = $pdo->query('SELECT * FROM generos');
-    $generos = $st->fetchAll();
     ?>
     <br>
     <div class="panel panel-primary">
