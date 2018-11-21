@@ -20,21 +20,11 @@ class EmptyParamException extends Exception
 {
 }
 
-function conectar()
-{
-    return new PDO('pgsql:host=localhost;dbname=fa', 'fa', 'fa');
-}
+// Funciones de Peliculas
 
 function buscarPelicula($pdo, $id)
 {
     $st = $pdo->prepare('SELECT * FROM peliculas WHERE id = :id');
-    $st->execute([':id' => $id]);
-    return $st->fetch();
-}
-
-function buscarUsuario($pdo, $id)
-{
-    $st = $pdo->prepare('SELECT * FROM usuarios WHERE id = :id');
     $st->execute([':id' => $id]);
     return $st->fetch();
 }
@@ -99,33 +89,10 @@ function comprobarGeneroId($pdo, &$error)
     return $fltGeneroId;
 }
 
-function comprobarGenero($pdo, &$error)
-{
-    $fltGenero = filter_input(INPUT_POST, 'genero', FILTER_VALIDATE_INT);
-    if ($fltGenero !== false) {
-        // Buscar en la base de datos si existe ese género
-        $st = $pdo->prepare('SELECT * FROM generos WHERE genero = :genero');
-        $st->execute([':genero' => $fltGenero]);
-        if (!$st->fetch()) {
-            $error['genero'] = 'No existe ese género.';
-        }
-    } else {
-        $error['genero'] = 'El género no es correcto.';
-    }
-    return $fltGenero;
-}
-
 function insertarPelicula($pdo, $fila)
 {
     $st = $pdo->prepare('INSERT INTO peliculas (titulo, anyo, sinopsis, duracion, genero_id)
                          VALUES (:titulo, :anyo, :sinopsis, :duracion, :genero_id)');
-    $st->execute($fila);
-}
-
-function insertarGenero($pdo, $fila)
-{
-    $st = $pdo->prepare('INSERT INTO generos (genero)
-                         VALUES (:genero)');
     $st->execute($fila);
 }
 
@@ -141,35 +108,13 @@ function modificarPelicula($pdo, $fila, $id)
     $st->execute($fila + ['id' => $id]);
 }
 
-function comprobarParametros($par)
+function comprobarPelicula($pdo, $id)
 {
-    if (empty($_POST)) {
-        throw new EmptyParamException();
-    }
-    if (!empty(array_diff_key($par, $_POST)) ||
-        !empty(array_diff_key($_POST, $par))) {
+    $fila = buscarPelicula($pdo, $id);
+    if ($fila === false) {
         throw new ParamException();
     }
-}
-
-function comprobarErrores($error)
-{
-    if (!empty($error)) {
-        throw new ValidationException();
-    }
-}
-
-function hasError($key, $error)
-{
-    return array_key_exists($key, $error) ? 'has-error' : '';
-}
-
-function mensajeError($key, $error)
-{
-    if (isset($error[$key])) { ?>
-        <small class="help-block"><?= $error[$key] ?></small>
-    <?php
-    }
+    return $fila;
 }
 
 function mostrarFormulario($valores, $error, $pdo, $accion)
@@ -232,6 +177,33 @@ function mostrarFormulario($valores, $error, $pdo, $accion)
     <?php
 }
 
+
+
+// Funciones de Generos
+
+function comprobarGenero($pdo, &$error)
+{
+    $fltGenero = filter_input(INPUT_POST, 'genero', FILTER_VALIDATE_INT);
+    if ($fltGenero !== false) {
+        // Buscar en la base de datos si existe ese género
+        $st = $pdo->prepare('SELECT * FROM generos WHERE genero = :genero');
+        $st->execute([':genero' => $fltGenero]);
+        if (!$st->fetch()) {
+            $error['genero'] = 'No existe ese género.';
+        }
+    } else {
+        $error['genero'] = 'El género no es correcto.';
+    }
+    return $fltGenero;
+}
+
+function insertarGenero($pdo, $fila)
+{
+    $st = $pdo->prepare('INSERT INTO generos (genero)
+                         VALUES (:genero)');
+    $st->execute($fila);
+}
+
 function mostrarFormularioGenero($valores, $error, $pdo, $accion)
 {
     extract($valores);
@@ -258,6 +230,54 @@ function mostrarFormularioGenero($valores, $error, $pdo, $accion)
     <?php
 }
 
+
+
+
+// Funciones comunes
+
+function conectar()
+{
+    return new PDO('pgsql:host=localhost;dbname=fa', 'fa', 'fa');
+}
+
+function buscarUsuario($pdo, $id)
+{
+    $st = $pdo->prepare('SELECT * FROM usuarios WHERE id = :id');
+    $st->execute([':id' => $id]);
+    return $st->fetch();
+}
+
+function comprobarParametros($par)
+{
+    if (empty($_POST)) {
+        throw new EmptyParamException();
+    }
+    if (!empty(array_diff_key($par, $_POST)) ||
+        !empty(array_diff_key($_POST, $par))) {
+        throw new ParamException();
+    }
+}
+
+function comprobarErrores($error)
+{
+    if (!empty($error)) {
+        throw new ValidationException();
+    }
+}
+
+function hasError($key, $error)
+{
+    return array_key_exists($key, $error) ? 'has-error' : '';
+}
+
+function mensajeError($key, $error)
+{
+    if (isset($error[$key])) { ?>
+        <small class="help-block"><?= $error[$key] ?></small>
+    <?php
+    }
+}
+
 function h($cadena)
 {
     return htmlspecialchars($cadena, ENT_QUOTES);
@@ -270,15 +290,6 @@ function comprobarId()
         throw new ParamException();
     }
     return $id;
-}
-
-function comprobarPelicula($pdo, $id)
-{
-    $fila = buscarPelicula($pdo, $id);
-    if ($fila === false) {
-        throw new ParamException();
-    }
-    return $fila;
 }
 
 function selected($a, $b)
