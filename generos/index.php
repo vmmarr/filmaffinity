@@ -28,7 +28,9 @@
             <?php endif ?>
             <div class="row">
                 <?php
+
                 $pdo = conectar();
+
                 if (isset($_POST['id'])) {
                     $id = $_POST['id'];
                     $pdo->beginTransaction();
@@ -37,17 +39,25 @@
                         <h3>El genero no existe.</h3>
                         <?php
                     } else {
-                        $st = $pdo->prepare('DELETE FROM generos WHERE id = :id');
-                        $st->execute([':id' => $id]); ?>
-                        <h3>Genero borrado correctamente.</h3>
+                        if (buscarPeliculasPorGenero($pdo, $id)) { ?>
+                            <h3>Hay peliculas de ese genero</h3>
                         <?php
+                    } else {
+                        $st = $pdo->prepare('DELETE FROM generos WHERE id = :id');
+                        if (!$st->execute([':id' => $id])) {
+                            print_r($st->errorInfo());
+                        } else { ?>
+                            <h3>Genero borrado correctamente.</h3>
+                        <?php
+                        }
                     }
+                }
                     $pdo->commit();
                 }
                 $buscarGenero = isset($_GET['buscarGenero'])
                 ? trim($_GET['buscarGenero'])
                 : '';
-                $st = $pdo->prepare('SELECT genero
+                $st = $pdo->prepare('SELECT *
                                        FROM generos
                                       WHERE position(lower(:genero) in lower(genero)) != 0
                                    ORDER BY id');
@@ -72,7 +82,7 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-offset-3 col-md-6">
                     <table class="table table-bordered table-hover table-striped">
                         <thead>
                             <th>Género</th>

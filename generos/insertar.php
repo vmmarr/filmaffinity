@@ -12,13 +12,13 @@
         <?php
         require '../comunes/auxiliar.php';
         menu();
-        $valores = PAR;
+        $valores = PAR_GENEROS;
         try {
             $error = [];
             $pdo = conectar();
-            comprobarParametros(PAR);
+            comprobarParametros(PAR_GENEROS);
             $valores = array_map('trim', $_POST);
-            $flt['genero'] = comprobarGenero($pdo, $error);
+            $flt['genero'] = comprobarGenero($error);
             comprobarErrores($error);
             insertarGenero($pdo, $flt);
             header('Location: index.php');
